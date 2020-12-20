@@ -1,0 +1,5 @@
+#!/bin/bash
+
+teams
+brave_new_window https://outlook.office.com/mail/inbox
+brave_new_window https://outlook.office.com/calendar/view/week
