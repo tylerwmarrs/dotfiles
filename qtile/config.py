@@ -1,16 +1,38 @@
+import logging
 import subprocess, re
 from typing import List  # noqa: F401
 
+import libqtile
 from libqtile import bar, layout, widget, hook
 from libqtile.config import Click, Drag, Group, Key, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
+
+logger = logging.getLogger('libqtile')
 
 mod = "mod4"
 alt = "mod1"
 terminal = 'termite'
 BROWSER = 'brave'
 MUSIC_PLAYER = 'spotify'
+LAPTOP_DISPLAY = 'eDP-1'
+DOCK_DISPLAY = 'DP-1-0.1'
+NUM_STACKS = 3
+WEB_GROUP = '1'
+MUSIC_GROUP = '4'
+WORK_COM_GROUP = '5'
+
+# Display detection functions
+
+def is_display_connected(display):
+    out = subprocess.getoutput('xrandr')
+    return '{} connected'.format(display) in out
+
+def is_dock_display_connected():
+    return is_display_connected(DOCK_DISPLAY)
+
+def is_laptop_display_connected():
+    return is_display_connected(LAPTOP_DISPLAY)
 
 def is_running(process):
     s = subprocess.Popen(["ps", "axuw"], stdout=subprocess.PIPE)
@@ -26,11 +48,33 @@ def execute_once(process):
 # start the applications at Qtile startup
 @hook.subscribe.startup
 def startup():
-    execute_once('bash /home/tyler/src/dotfiles/.screenlayout/dockedprimary.sh')
+    if is_dock_display_connected():
+        execute_once('bash /home/tyler/src/dotfiles/.screenlayout/dockedprimary.sh')
+        NUM_STACKS = 3
+    else:
+        # TODO: figure out xrandr settings for laptop only
+        pass
+
     execute_once('nitrogen --restore')
     execute_once('gnome-keyring-daemon --start')
     execute_once('nm-applet')
     execute_once('dunst')
+
+@hook.subscribe.client_name_updated
+def stick_windows_to_group_by_name(c):
+    name = c.name
+
+    if name:
+        if MUSIC_PLAYER.lower() in name.lower():
+            c.togroup(MUSIC_GROUP, switch_group=False)
+        # elif 'discord' in name.lower():
+        #     c.togroup(WEB_GROUP)
+        # elif 'mail' in name.lower() and 'tyler marrs' in name.lower() and 'outlook' in name.lower():
+        #     c.togroup(WORK_COM_GROUP)
+        # elif 'calendar' in name.lower() and 'tyler marrs' in name.lower() and 'outlook' in name.lower():
+        #     c.togroup(WORK_COM_GROUP)
+        # elif 'microsoft' in name.lower() and 'teams':
+        #     c.togroup(WORK_COM_GROUP)
 
 # add 'PlayPause', 'Next' or 'Previous'
 music_cmd = ('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify '
@@ -243,19 +287,30 @@ for i in groups:
         Key([mod, "shift"], i.name, lazy.window.togroup(i.name) , lazy.group[i.name].toscreen()), 
     ])
 
+COLORS = {
+    'black': '#000000',
+    'light_grey': '#cccccc'
+}
+
+layout_defaults = {
+    'border_focus': COLORS['light_grey'],
+    'border_normal': COLORS['black'],
+    'border_width': 2,
+    'margin': 3
+}
 
 layouts = [
-    layout.Max(),
-    layout.Stack(num_stacks=3),
+    layout.Max(**layout_defaults),
+    layout.Stack(num_stacks=NUM_STACKS, **layout_defaults),
     # layout.Bsp(),
-    layout.Columns(),
-    layout.Matrix(),
-    layout.MonadTall(),
+    layout.Columns(**layout_defaults),
+    layout.Matrix(**layout_defaults),
+    layout.MonadTall(**layout_defaults),
     # layout.MonadWide(),
-    layout.RatioTile(),
-    layout.Tile(),
+    layout.RatioTile(**layout_defaults),
+    layout.Tile(**layout_defaults),
     # layout.TreeTab(),
-    layout.VerticalTile(),
+    layout.VerticalTile(**layout_defaults),
     # layout.Zoomy(),
 ]
 
