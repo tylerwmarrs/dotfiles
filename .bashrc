@@ -132,21 +132,6 @@ ex ()
   fi
 }
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/tyler/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/tyler/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/tyler/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/tyler/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
 export EDITOR=vim
 
 # SPARK
@@ -156,6 +141,10 @@ export PYSPARK_PYTHON=/usr/bin/python3
 
 if [ -e $HOME/.bash_aliases ]; then
     source $HOME/.bash_aliases
+fi
+
+if [ -e $HOME/.bash_conda_init ]; then
+	source $HOME/.bash_conda_init
 fi
 
 # show neofetch

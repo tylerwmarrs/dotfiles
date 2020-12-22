@@ -27,6 +27,14 @@ fi
     ''' >> $HOME/.bashrc
 fi
 
+# conda
+CONDA=$HOME/.bash_conda_init
+if [ -f "$CONDA" ]; then
+    rm $CONDA
+fi
+
+ln -s $DIR/.bash_conda_init $CONDA
+
 # termite
 mkdir -p $HOME/.config/termite
 TERMITE_CONFIG="$HOME/.config/termite/config"
