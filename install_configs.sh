@@ -3,6 +3,14 @@ set e
 
 DIR=`dirname "$(readlink -f "$0")"`
 
+# bashrc
+BASHRC=$HOME/.bashrc
+if [ -f "$BASHRC" ]; then
+    rm $BASHRC
+fi
+
+ln -s $DIR/.bashrc $BASHRC
+
 # bash aliases
 BASH_ALIASES=$HOME/.bash_aliases
 if [ -f "$BASH_ALIASES" ]; then
@@ -55,3 +63,11 @@ fi
 if [ ! -f "$HOME/.local/bin/work_communications" ]; then
     ln -s $DIR/bin/work_communications $HOME/.local/bin/work_communications
 fi
+
+# starship
+STARSHIP=$HOME/.config/starship.toml
+if [ -f "$STARSHIP" ]; then
+    rm $STARSHIP
+fi
+
+ln -s $DIR/.config/starship.toml $STARSHIP
