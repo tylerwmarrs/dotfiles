@@ -59,8 +59,12 @@ if [ ! -f "$HOME/.local/bin/brave_new_window" ]; then
     ln -s $DIR/bin/brave_new_window $HOME/.local/bin/brave_new_window
 fi
 
-if [ ! -f "$HOME/.local/bin/work_communications" ]; then
-    ln -s $DIR/bin/work_communications $HOME/.local/bin/work_communications
+if [ ! -f "$HOME/.local/bin/work_calendar" ]; then
+    ln -s $DIR/bin/work_calendar $HOME/.local/bin/work_calendar
+fi
+
+if [ ! -f "$HOME/.local/bin/work_email" ]; then
+    ln -s $DIR/bin/work_email $HOME/.local/bin/work_email
 fi
 
 # starship

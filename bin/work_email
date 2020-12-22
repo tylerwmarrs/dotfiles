@@ -1,0 +1,2 @@
+#!/bin/bash
+qutebrowser https://outlook.office.com/mail/inbox --target window
