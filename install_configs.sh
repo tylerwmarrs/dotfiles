@@ -27,7 +27,6 @@ fi
     ''' >> $HOME/.bashrc
 fi
 
-
 # termite
 mkdir -p $HOME/.config/termite
 TERMITE_CONFIG="$HOME/.config/termite/config"
@@ -44,7 +43,7 @@ if [ -f "$QTILE_CONFIG" ]; then
     rm $QTILE_CONFIG
 fi
 
-ln -s $DIR/qtile/config.py $QTILE_CONFIG
+ln -s $DIR/.config/qtile/config.py $QTILE_CONFIG
 
 # dunst
 mkdir -p $HOME/.config/dunst
