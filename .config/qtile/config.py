@@ -22,6 +22,17 @@ WEB_GROUP = '1'
 MUSIC_GROUP = '4'
 WORK_COM_GROUP = '5'
 
+COLORS = {
+    'background': '#21222c',
+    'foreground': '#f8f8f2',
+    'active': '#6272a4',
+    'inactive': '#44475a',
+    'urgent': '#ff5555',
+    'floating': '#8be9fd',
+    'black': '#000000',
+    'light_grey': '#cccccc'
+}
+
 # Display detection functions
 
 def is_display_connected(display):
@@ -287,14 +298,9 @@ for i in groups:
         Key([mod, "shift"], i.name, lazy.window.togroup(i.name) , lazy.group[i.name].toscreen()), 
     ])
 
-COLORS = {
-    'black': '#000000',
-    'light_grey': '#cccccc'
-}
-
 layout_defaults = {
-    'border_focus': COLORS['light_grey'],
-    'border_normal': COLORS['black'],
+    'border_focus': COLORS['active'],
+    'border_normal': COLORS['inactive'],
     'border_width': 2,
     'margin': 3
 }
@@ -316,7 +322,7 @@ layouts = [
 
 widget_defaults = dict(
     font='Source Code Pro',
-    fontsize=12,
+    fontsize=20,
     padding=3,
 )
 extension_defaults = widget_defaults.copy()
@@ -325,24 +331,18 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.CurrentLayout(),
-                widget.GroupBox(),
-                widget.Prompt(),
-                widget.WindowName(),
-                widget.Chord(
-                    chords_colors={
-                        'launch': ("#ff0000", "#ffffff"),
-                    },
-                    name_transform=lambda name: name.upper(),
-                ),
-                widget.Volume(emoji=True, volume_app='pavucontrol', mouse_callbacks={'Button1': lazy.spawn('pavucontrol')}),
-                widget.CPU(format='CPU {load_percent}%'),
-                widget.TextBox("|", foreground="#cccccc"),
-                widget.Battery(format='Battery {percent:2.0%} {hour:d}:{min:02d}'),                
-                widget.TextBox("|", foreground="#cccccc"),
-                widget.Systray(),
-                widget.TextBox("|", foreground="#cccccc"),
-                widget.Clock(format='%a %Y-%m-%d %I:%M %p'),
+                widget.CurrentLayout(background=COLORS['background'], foreground=COLORS['foreground']),
+                widget.GroupBox(background=COLORS['background'], foreground=COLORS['foreground'], active=COLORS['active'], inactive=COLORS['inactive']),
+                widget.Prompt(background=COLORS['background'], foreground=COLORS['foreground']),
+                widget.WindowName(background=COLORS['background'], foreground=COLORS['foreground']),
+                widget.Volume(background=COLORS['background'], foreground=COLORS['foreground'], emoji=True, volume_app='pavucontrol', mouse_callbacks={'Button1': lazy.spawn('pavucontrol')}),
+                widget.CPU(background=COLORS['background'], foreground=COLORS['foreground'], format='CPU {load_percent}%'),
+                widget.TextBox("|", background=COLORS['background'], foreground="#cccccc"),
+                widget.Battery(background=COLORS['background'], foreground=COLORS['foreground'], format='Battery {percent:2.0%} {hour:d}:{min:02d}'),                
+                widget.TextBox("|", background=COLORS['background'], foreground="#cccccc"),
+                widget.Systray(background=COLORS['background'], foreground=COLORS['foreground']),
+                widget.TextBox("|", background=COLORS['background'], foreground="#cccccc"),
+                widget.Clock(background=COLORS['background'], foreground=COLORS['foreground'], format='%a %Y-%m-%d %I:%M %p'),
             ],
             24,
         ),
@@ -390,7 +390,7 @@ def set_floating(window):
         window.floating = True
 
 auto_fullscreen = True
-focus_on_window_activation = "focus" # or smart
+focus_on_window_activation = "smart" # or smart
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the

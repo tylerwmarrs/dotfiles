@@ -70,3 +70,12 @@ if [ -f "$STARSHIP" ]; then
 fi
 
 ln -s $DIR/.config/starship.toml $STARSHIP
+
+# picom
+PICOM=$HOME/.config/picom/picom.conf
+mkdir -p $HOME/.config/picom
+if [ -f "$PICOM" ]; then
+    rm $PICOM
+fi
+
+ln -s $DIR/.config/picom/picom.conf $PICOM
