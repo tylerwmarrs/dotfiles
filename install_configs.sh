@@ -91,3 +91,18 @@ if [ -f "$PICOM" ]; then
 fi
 
 ln -s $DIR/.config/picom/picom.conf $PICOM
+
+
+# vim
+VIM=$HOME/.vim
+VIMRC=$HOME/.vimrc
+if [[ -f "$VIM" ]] || [[ -d "$VIM" ]]; then
+    rm -rf $VIM
+fi
+
+if [ -f "$VIMRC" ]; then
+    rm $VIMRC
+fi
+
+ln -s $DIR/.vim $VIM
+ln -s $DIR/.vimrc $VIMRC

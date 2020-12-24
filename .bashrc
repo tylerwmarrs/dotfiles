@@ -1,6 +1,7 @@
 #
 # ~/.bashrc
 #
+TERM="xterm-256color"
 
 [[ $- != *i* ]] && return
 
