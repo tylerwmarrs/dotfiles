@@ -76,7 +76,7 @@ def stick_windows_to_group_by_name(c):
     name = c.name
 
     if name:
-        if MUSIC_PLAYER.lower() in name.lower():
+        if name.lower().strip().startswith(MUSIC_PLAYER.lower()):
             c.togroup(MUSIC_GROUP, switch_group=False)
         # elif 'discord' in name.lower():
         #     c.togroup(WEB_GROUP)
@@ -94,15 +94,6 @@ music_cmd = ('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify '
 def next_prev(action):
     def f(qtile):
         qtile.cmd_spawn(music_cmd + action)
-    return f
-
-def app_or_group(group, app):
-    def f(qtile):
-        if qtile.groupMap[group].windows:
-            qtile.groupMap[group].cmd_toscreen()
-        else:
-            qtile.groupMap[group].cmd_toscreen()
-            qtile.cmd_spawn(app)
     return f
 
 keys = [
@@ -203,7 +194,11 @@ keys = [
 
     # App shortcuts
     Key([], 'Print', lazy.spawn('flameshot gui')),
-    Key([mod],  'm', lazy.function(app_or_group('MUSIC', MUSIC_PLAYER))),
+    Key([mod], 'm', lazy.spawn(MUSIC_PLAYER)),
+    Key([mod], 'c', lazy.spawn('code')),
+    Key([mod], 'b', lazy.spawn('brave --new-window')),
+    Key([mod], 'f', lazy.spawn('thunar')),
+    Key([mod], 's', lazy.spawn('pavucontrol')),
 ]
 
 # Group SETTINGS
@@ -292,8 +287,8 @@ for i in range(len(group_names)):
 
 for i in groups:
     keys.extend([
-        Key([mod], i.name, lazy.group[i.name].toscreen()), 
-        Key([mod], "Tab", lazy.screen.next_group()),	   	
+        Key([mod], i.name, lazy.group[i.name].toscreen()),
+        Key([mod], "Tab", lazy.screen.next_group()),
         Key([mod, "control"], i.name, lazy.window.togroup(i.name)), 
         Key([mod, "shift"], i.name, lazy.window.togroup(i.name) , lazy.group[i.name].toscreen()), 
     ])
@@ -336,7 +331,8 @@ screens = [
                 widget.Prompt(background=COLORS['background'], foreground=COLORS['foreground']),
                 widget.WindowName(background=COLORS['background'], foreground=COLORS['foreground']),
                 widget.Volume(background=COLORS['background'], foreground=COLORS['foreground'], emoji=True, volume_app='pavucontrol', mouse_callbacks={'Button1': lazy.spawn('pavucontrol')}),
-                widget.CPU(background=COLORS['background'], foreground=COLORS['foreground'], format='CPU {load_percent}%'),
+                widget.TextBox("|", background=COLORS['background'], foreground="#cccccc"),
+                widget.CPU(font='FontAwesome', background=COLORS['background'], foreground=COLORS['foreground'], format=' {load_percent}%'),
                 widget.TextBox("|", background=COLORS['background'], foreground="#cccccc"),
                 widget.Battery(background=COLORS['background'], foreground=COLORS['foreground'], format='Battery {percent:2.0%} {hour:d}:{min:02d}'),                
                 widget.TextBox("|", background=COLORS['background'], foreground="#cccccc"),
