@@ -101,31 +101,6 @@ def startup():
     execute_once('nm-applet')
     execute_once('dunst')
 
-@hook.subscribe.client_name_updated
-def stick_windows_to_group_by_name(c):
-    name = c.name
-
-    if name:
-        if name.lower().strip().startswith(MUSIC_PLAYER.lower()):
-            c.togroup(MUSIC_GROUP, switch_group=False)
-        # elif 'discord' in name.lower():
-        #     c.togroup(WEB_GROUP)
-        # elif 'mail' in name.lower() and 'tyler marrs' in name.lower() and 'outlook' in name.lower():
-        #     c.togroup(WORK_COM_GROUP)
-        # elif 'calendar' in name.lower() and 'tyler marrs' in name.lower() and 'outlook' in name.lower():
-        #     c.togroup(WORK_COM_GROUP)
-        # elif 'microsoft' in name.lower() and 'teams':
-        #     c.togroup(WORK_COM_GROUP)
-
-# add 'PlayPause', 'Next' or 'Previous'
-music_cmd = ('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify '
-                     '/org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.')
-
-def next_prev(action):
-    def f(qtile):
-        qtile.cmd_spawn(music_cmd + action)
-    return f
-
 keys = [
     # Switch between windows in current stack pane
     Key([mod], "k", lazy.layout.down(),
@@ -242,6 +217,10 @@ group_labels = []
 group_layouts = []
 group_kwargs = [{} for _ in range(1, 10)]
 
+# additonal settings for stocks
+group_names.append('0')
+group_kwargs.append({})
+
 # Personal space for browsing and discord
 group_labels.append('WEB')
 group_layouts.append('monadtall')
@@ -307,6 +286,9 @@ group_layouts.append('monadtall')
 group_labels.append('RANDOM')
 group_layouts.append('max')
 # group_kwargs.append({})
+
+group_labels.append('STOCKS')
+group_layouts.append('ratiotile')
 
 for i in range(len(group_names)):
     groups.append(
