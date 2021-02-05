@@ -2,6 +2,8 @@ import logging
 import subprocess, re
 from typing import List  # noqa: F401
 
+import requests
+
 import libqtile
 from libqtile import bar, layout, widget, hook
 from libqtile.config import Click, Drag, Group, Key, Screen
@@ -14,7 +16,7 @@ mod = "mod4"
 alt = "mod1"
 terminal = 'termite'
 BROWSER = 'brave'
-MUSIC_PLAYER = 'spotify'
+MUSIC_PLAYER = 'youtube-music-desktop-app'
 LAPTOP_DISPLAY = 'eDP-1'
 DOCK_DISPLAY = 'DP-1-0.1'
 NUM_STACKS = 3
@@ -32,6 +34,34 @@ COLORS = {
     'black': '#000000',
     'light_grey': '#cccccc'
 }
+
+def youtube_music_command(cmd):
+    r = requests.post('http://localhost:9863/query', json={'command': cmd})
+    return r.status_code == 200
+
+def youtube_music_info():
+    r = requests.get('http://localhost:9863/query')
+    return r.json()
+
+def youtube_music_toggle_play(_):
+    info = youtube_music_info()
+    is_paused = info.get('player').get('isPaused')
+    if is_paused:
+        youtube_music_command('track-play')
+    else:
+        youtube_music_command('track-pause')
+
+def youtube_music_like_track(_):
+    return youtube_music_command('track-thumbs-up')
+
+def youtube_music_dislike_track(_):
+    return youtube_music_command('track-thumbs-down')
+
+def youtube_music_next(_):
+    return youtube_music_command('track-next')
+
+def youtube_music_previous(_):
+    return youtube_music_command('track-previous')
 
 # Display detection functions
 
@@ -188,9 +218,11 @@ keys = [
     Key([], 'XF86AudioMute', lazy.spawn('ponymix toggle')),
     Key([], 'XF86AudioRaiseVolume', lazy.spawn('ponymix increase 5')),
     Key([], 'XF86AudioLowerVolume', lazy.spawn('ponymix decrease 5')),
-    Key([], 'XF86AudioPlay', lazy.spawn(music_cmd + 'PlayPause')),
-    Key([], 'XF86AudioNext', lazy.function(next_prev('Next'))),
-    Key([], 'XF86AudioPrev', lazy.function(next_prev('Previous'))),
+    Key([], 'XF86AudioPlay', lazy.function(youtube_music_toggle_play)),
+    Key([], 'XF86AudioNext', lazy.function(youtube_music_next)),
+    Key([], 'XF86AudioPrev', lazy.function(youtube_music_previous)),
+    Key([mod], "Up", lazy.function(youtube_music_like_track)),
+    Key([mod], "Down", lazy.function(youtube_music_dislike_track)),
 
     # App shortcuts
     Key([], 'Print', lazy.spawn('flameshot gui')),
