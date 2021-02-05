@@ -96,10 +96,18 @@ def startup():
         # TODO: figure out xrandr settings for laptop only
         pass
 
+    # wallpaper restoration
     execute_once('nitrogen --restore')
     execute_once('gnome-keyring-daemon --start')
+
+    # network manager tray icon
     execute_once('nm-applet')
+
+    # system notification popups
     execute_once('dunst')
+
+    # corsair keyboard program
+    execute_once('ckb-next')
 
 keys = [
     # Switch between windows in current stack pane
