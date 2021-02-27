@@ -15,7 +15,7 @@ logger = logging.getLogger('libqtile')
 mod = "mod4"
 alt = "mod1"
 terminal = 'termite'
-BROWSER = 'brave'
+BROWSER = 'firefox'
 MUSIC_PLAYER = 'youtube-music-desktop-app'
 LAPTOP_DISPLAY = 'eDP-1'
 DOCK_DISPLAY = 'DP-1-0.1'
@@ -92,6 +92,7 @@ def startup():
     if is_dock_display_connected():
         execute_once('bash /home/tyler/src/dotfiles/.screenlayout/dockedprimary.sh')
         NUM_STACKS = 3
+        execute_once('xrandr --output {} --off'.format(LAPTOP_DISPLAY))
     else:
         # TODO: figure out xrandr settings for laptop only
         pass
@@ -211,7 +212,7 @@ keys = [
     Key([], 'Print', lazy.spawn('flameshot gui')),
     Key([mod], 'm', lazy.spawn(MUSIC_PLAYER)),
     Key([mod], 'c', lazy.spawn('code')),
-    Key([mod], 'b', lazy.spawn('brave --new-window')),
+    Key([mod], 'b', lazy.spawn('{} --new-window'.format(BROWSER))),
     Key([mod], 'f', lazy.spawn('thunar')),
     Key([mod], 's', lazy.spawn('pavucontrol')),
 ]
