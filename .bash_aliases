@@ -10,3 +10,8 @@ alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
 alias np='nano -w PKGBUILD'
 alias more=less
+
+# disable gpu for some apps by defualt
+alias code="code --disable-gpu"
+alias teams="teams --disable-gpu"
+alias azuredatastudio="azuredatastudio --disable-gpu"

@@ -110,6 +110,9 @@ def startup():
     # corsair keyboard program
     execute_once('ckb-next')
 
+    # bluetooth manager
+    execute_once('blueman-applet')
+
 keys = [
     # Switch between windows in current stack pane
     Key([mod], "k", lazy.layout.down(),
@@ -211,7 +214,7 @@ keys = [
     # App shortcuts
     Key([], 'Print', lazy.spawn('flameshot gui')),
     Key([mod], 'm', lazy.spawn(MUSIC_PLAYER)),
-    Key([mod], 'c', lazy.spawn('code')),
+    Key([mod], 'c', lazy.spawn('code --disable-gpu')),
     Key([mod], 'b', lazy.spawn('{} --new-window'.format(BROWSER))),
     Key([mod], 'f', lazy.spawn('thunar')),
     Key([mod], 's', lazy.spawn('pavucontrol')),
