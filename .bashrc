@@ -138,7 +138,7 @@ export EDITOR=vim
 # SPARK
 export SPARK_HOME=/opt/spark/current
 export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
-export PYSPARK_PYTHON=/usr/bin/python3
+export PYSPARK_PYTHON=/home/tyler/miniconda3/envs/py38-spark/bin/python
 
 if [ -e $HOME/.bash_aliases ]; then
     source $HOME/.bash_aliases

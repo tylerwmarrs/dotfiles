@@ -215,6 +215,7 @@ keys = [
     Key([], 'Print', lazy.spawn('flameshot gui')),
     Key([mod], 'm', lazy.spawn(MUSIC_PLAYER)),
     Key([mod], 'c', lazy.spawn('code --disable-gpu')),
+    Key([mod], 'd', lazy.spawn('openboard')),
     Key([mod], 'b', lazy.spawn('{} --new-window'.format(BROWSER))),
     Key([mod], 'f', lazy.spawn('thunar')),
     Key([mod], 's', lazy.spawn('pavucontrol')),
