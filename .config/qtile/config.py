@@ -37,6 +37,10 @@ COLORS = {
 
 
 class CustomVolume(widget.Volume):
+    def __init__(self, **config):
+        super().__init__(**config)
+        self.muted = None
+
     def get_volume(self):
         try:
             cmd = ['pamixer', '--get-volume']
@@ -45,9 +49,29 @@ class CustomVolume(widget.Volume):
             return -1
         return int(output)
 
+    def get_muted(self):
+        try:
+            cmd = ['pamixer', '--get-mute']
+            output = self.call_process(cmd)
+        except subprocess.CalledProcessError:
+            return None
+        return 'true' in output.lower()
+
+    def update(self):
+        vol = self.get_volume()
+        muted = self.get_muted()
+        if vol != self.volume or muted != self.muted:
+            self.volume = vol
+            self.muted = muted
+            # Update the underlying canvas size before actually attempting
+            # to figure out how big it is and draw it.
+            self._update_drawer()
+            self.bar.draw()
+        self.timeout_add(self.update_interval, self.update)
+
     def _update_drawer(self):
         tmp = ''
-        if self.volume <= 0:
+        if self.volume <= 0 or self.muted:
             tmp = u'\U0001f507'
         elif self.volume <= 30:
             tmp = u'\U0001f508'
@@ -59,41 +83,6 @@ class CustomVolume(widget.Volume):
         volume = 0 if self.volume <= 0 else self.volume
 
         self.text = f'{tmp} {volume}%'
-
-
-def youtube_music_command(cmd):
-    r = requests.post('http://localhost:9863/query', json={'command': cmd})
-    return r.status_code == 200
-
-
-def youtube_music_info():
-    r = requests.get('http://localhost:9863/query')
-    return r.json()
-
-
-def youtube_music_toggle_play(_):
-    info = youtube_music_info()
-    is_paused = info.get('player').get('isPaused')
-    if is_paused:
-        youtube_music_command('track-play')
-    else:
-        youtube_music_command('track-pause')
-
-
-def youtube_music_like_track(_):
-    return youtube_music_command('track-thumbs-up')
-
-
-def youtube_music_dislike_track(_):
-    return youtube_music_command('track-thumbs-down')
-
-
-def youtube_music_next(_):
-    return youtube_music_command('track-next')
-
-
-def youtube_music_previous(_):
-    return youtube_music_command('track-previous')
 
 
 # Display detection functions
@@ -243,11 +232,11 @@ keys = [
     Key([], 'XF86AudioMute', lazy.spawn('ponymix toggle')),
     Key([], 'XF86AudioRaiseVolume', lazy.spawn('ponymix increase 5')),
     Key([], 'XF86AudioLowerVolume', lazy.spawn('ponymix decrease 5')),
-    Key([], 'XF86AudioPlay', lazy.function(youtube_music_toggle_play)),
-    Key([], 'XF86AudioNext', lazy.function(youtube_music_next)),
-    Key([], 'XF86AudioPrev', lazy.function(youtube_music_previous)),
-    Key([mod], "Up", lazy.function(youtube_music_like_track)),
-    Key([mod], "Down", lazy.function(youtube_music_dislike_track)),
+    # Key([], 'XF86AudioPlay', lazy.function(youtube_music_toggle_play)),
+    # Key([], 'XF86AudioNext', lazy.function(youtube_music_next)),
+    # Key([], 'XF86AudioPrev', lazy.function(youtube_music_previous)),
+    # Key([mod], "Up", lazy.function(youtube_music_like_track)),
+    # Key([mod], "Down", lazy.function(youtube_music_dislike_track)),
 
     # App shortcuts
     Key([], 'Print', lazy.spawn('flameshot gui')),
@@ -275,23 +264,10 @@ group_kwargs.append({})
 # Personal space for browsing and discord
 group_labels.append('WEB')
 group_layouts.append('monadtall')
-# group_kwargs.append({
-#     'spawn': [
-#         'discord',
-#         'brave --new-window https://gmail.com'
-#     ]
-# })
 
 # Personal space for coding
 group_labels.append('CODE')
 group_layouts.append('monadtall')
-# group_kwargs.append({
-#     'spawn': [
-#         'code',
-#         'brave',
-#         'termite'
-#     ]
-# })
 
 # Personal space for writing
 group_labels.append('WRITE')
@@ -301,22 +277,10 @@ group_kwargs.append({})
 # Personal space for music
 group_labels.append('MUSIC')
 group_layouts.append('max')
-# group_kwargs.append({
-#     'spawn': [
-#         'spotify'
-#     ]
-# })
 
 # Work space for work chat/email/calendar
 group_labels.append('WCOMS')
 group_layouts.append('stack')
-# group_kwargs.append({
-#     'spawn': [
-#         'teams',
-#         'brave --new-window https://outlook.office.com/mail/inbox',
-#         'brave --new-window https://outlook.office.com/calendar/view/week'
-#     ]
-# })
 
 # Work space for work code
 group_labels.append('WCODE')
