@@ -35,13 +35,41 @@ COLORS = {
     'light_grey': '#cccccc'
 }
 
+
+class CustomVolume(widget.Volume):
+    def get_volume(self):
+        try:
+            cmd = ['pamixer', '--get-volume']
+            output = self.call_process(cmd).strip()
+        except subprocess.CalledProcessError:
+            return -1
+        return int(output)
+
+    def _update_drawer(self):
+        tmp = ''
+        if self.volume <= 0:
+            tmp = u'\U0001f507'
+        elif self.volume <= 30:
+            tmp = u'\U0001f508'
+        elif self.volume < 80:
+            tmp = u'\U0001f509'
+        elif self.volume >= 80:
+            tmp = u'\U0001f50a'
+
+        volume = 0 if self.volume <= 0 else self.volume
+
+        self.text = f'{tmp} {volume}%'
+
+
 def youtube_music_command(cmd):
     r = requests.post('http://localhost:9863/query', json={'command': cmd})
     return r.status_code == 200
 
+
 def youtube_music_info():
     r = requests.get('http://localhost:9863/query')
     return r.json()
+
 
 def youtube_music_toggle_play(_):
     info = youtube_music_info()
@@ -51,29 +79,36 @@ def youtube_music_toggle_play(_):
     else:
         youtube_music_command('track-pause')
 
+
 def youtube_music_like_track(_):
     return youtube_music_command('track-thumbs-up')
+
 
 def youtube_music_dislike_track(_):
     return youtube_music_command('track-thumbs-down')
 
+
 def youtube_music_next(_):
     return youtube_music_command('track-next')
+
 
 def youtube_music_previous(_):
     return youtube_music_command('track-previous')
 
-# Display detection functions
 
+# Display detection functions
 def is_display_connected(display):
     out = subprocess.getoutput('xrandr')
     return '{} connected'.format(display) in out
 
+
 def is_dock_display_connected():
     return is_display_connected(DOCK_DISPLAY)
 
+
 def is_laptop_display_connected():
     return is_display_connected(LAPTOP_DISPLAY)
+
 
 def is_running(process):
     s = subprocess.Popen(["ps", "axuw"], stdout=subprocess.PIPE)
@@ -82,9 +117,11 @@ def is_running(process):
             return True
     return False
 
+
 def execute_once(process):
     if not is_running(process):
         return subprocess.Popen(process.split())
+
 
 # start the applications at Qtile startup
 @hook.subscribe.startup
@@ -112,6 +149,7 @@ def startup():
 
     # bluetooth manager
     execute_once('blueman-applet')
+
 
 keys = [
     # Switch between windows in current stack pane
@@ -357,11 +395,11 @@ screens = [
                 widget.GroupBox(background=COLORS['background'], foreground=COLORS['foreground'], active=COLORS['active'], inactive=COLORS['inactive']),
                 widget.Prompt(background=COLORS['background'], foreground=COLORS['foreground']),
                 widget.WindowName(background=COLORS['background'], foreground=COLORS['foreground']),
-                widget.Volume(background=COLORS['background'], foreground=COLORS['foreground'], emoji=True, volume_app='pavucontrol', mouse_callbacks={'Button1': lazy.spawn('pavucontrol')}),
+                CustomVolume(font='FontAwesome', background=COLORS['background'], foreground=COLORS['foreground'], emoji=True, volume_app='pavucontrol', mouse_callbacks={'Button1': lazy.spawn('pavucontrol')}),
                 widget.TextBox("|", background=COLORS['background'], foreground="#cccccc"),
                 widget.CPU(font='FontAwesome', background=COLORS['background'], foreground=COLORS['foreground'], format=' {load_percent}%'),
                 widget.TextBox("|", background=COLORS['background'], foreground="#cccccc"),
-                widget.Battery(background=COLORS['background'], foreground=COLORS['foreground'], format='Battery {percent:2.0%} {hour:d}:{min:02d}'),                
+                widget.Battery(background=COLORS['background'], foreground=COLORS['foreground'], format=u'\U0001F50B {percent:2.0%} {hour:d}:{min:02d}'),
                 widget.TextBox("|", background=COLORS['background'], foreground="#cccccc"),
                 widget.Systray(background=COLORS['background'], foreground=COLORS['foreground']),
                 widget.TextBox("|", background=COLORS['background'], foreground="#cccccc"),
