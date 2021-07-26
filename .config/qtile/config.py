@@ -134,10 +134,13 @@ def startup():
     execute_once('dunst')
 
     # corsair keyboard program
-    execute_once('ckb-next')
+    execute_once('ckb-next-daemon')
 
     # bluetooth manager
     execute_once('blueman-applet')
+
+    # screensaver
+    execute_once('xscreensaver')
 
 
 keys = [
@@ -392,6 +395,7 @@ cursor_warp = False
 floating_layout = layout.Floating(float_rules=[
     # Run the utility of `xprop` to see the wm class and name of an X client.
     {'wmclass': 'confirm'},
+    {'wmclass': 'StardewValley.bin.x86_64'},
     {'wmclass': 'dialog'},
     {'wmclass': 'download'},
     {'wmclass': 'error'},
