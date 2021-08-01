@@ -142,6 +142,9 @@ def startup():
     # screensaver
     execute_once('xscreensaver')
 
+    # picom for transparency
+    execute_once('picom --experimental-backends --backend glx --xrender-sync-fence')
+
 
 keys = [
     # Switch between windows in current stack pane
