@@ -14,7 +14,7 @@ logger = logging.getLogger('libqtile')
 
 mod = "mod4"
 alt = "mod1"
-terminal = 'termite'
+terminal = 'kitty'
 BROWSER = 'firefox'
 MUSIC_PLAYER = 'youtube-music-desktop-app'
 LAPTOP_DISPLAY = 'eDP-1'

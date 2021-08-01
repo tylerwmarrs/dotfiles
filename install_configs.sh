@@ -44,6 +44,15 @@ fi
 
 ln -s $DIR/.config/termite/config $TERMITE_CONFIG
 
+# kitty terminal
+mkdir -p $HOME/.config/kitty
+KITTY_CONFIG="$HOME/.config/kitty/kitty.conf"
+if [ -f "$KITTY_CONFIG" ]; then
+    rm $KITTY_CONFIG
+fi
+
+ln -s $DIR/.config/kitty/kitty.conf $KITTY_CONFIG
+
 # qtile
 mkdir -p $HOME/.config/qtile
 QTILE_CONFIG="$HOME/.config/qtile/config.py"
